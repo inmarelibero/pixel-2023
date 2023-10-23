@@ -13,17 +13,16 @@ class AuthenticationManager
     }
 
     /**
-     * @param $email
-     * @param $password
+     * @param $user
      * @return void
      */
-    public function addUser($email, $password)
+    public function addUser(User $user)
     {
         $users = $this->getUsers();
 
         $users[] = [
-            'email' => $email,
-            'password' => $password,
+            'email' => $user->getEmail(),
+            'password' => $user->getPasswordHash(),
         ];
 
         $this->saveUsers($users);
@@ -39,16 +38,15 @@ class AuthenticationManager
     }
 
     /**
-     * @param $email
-     * @param $password
+     * @param $user
      * @return bool
      */
-    public function checkCredentials($email, $password): bool
+    public function checkCredentials(User $user): bool
     {
         $users = $this->getUsers();
 
-        foreach ($users as $user) {
-            if ($email === $user['email'] && $password === $user['password']) {
+        foreach ($users as $u) {
+            if ($user->getEmail() === $u->getEmail() && $user->getPasswordHash() === $u->getPasswordHash()) {
                 return true;
             }
         }
@@ -64,7 +62,7 @@ class AuthenticationManager
     public function emailExists($email, array $users): bool
     {
         foreach ($users as $user) {
-            if ($user['email'] === $email) {
+            if ($user->getEmail() === $email) {
                 return true;
             }
         }
@@ -94,10 +92,15 @@ class AuthenticationManager
         $usersFilename = $this->fileManager->buildPathRelativeToProjectRoot('users.json');
         $content = file_get_contents($usersFilename);
 
-        $users = json_decode($content, true);
+        $usersData = json_decode($content, true);
 
-        if ($users === null) {
+        if ($usersData === null) {
             return [];
+        }
+
+        $users = [];
+        foreach ($usersData as $user) {
+            $users[] = new User($user['email'], $user['password']);
         }
 
         return $users;

@@ -2,6 +2,7 @@
 session_start();
 
 require_once(__DIR__.'/src/class/App.php');
+require_once(__DIR__.'/src/class/User.php');
 require_once(__DIR__.'/src/class/AuthenticationManager.php');
 require_once(__DIR__.'/src/class/FileManager.php');
 require_once(__DIR__.'/src/class/Logger.php');
