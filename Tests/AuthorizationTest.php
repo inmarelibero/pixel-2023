@@ -17,7 +17,8 @@ final class AuthorizationTest extends BaseTestCase
         $this->assertFalse($authenticationManager->isUserAuthenticated());
 
         // do login
-        $authenticationManager->authenticateUser('bar@example.com');
+        $user = new User('bar@example.com', 'bar');
+        $authenticationManager->authenticateUser($user);
 
         $this->assertTrue($authenticationManager->isUserAuthenticated());
         $this->assertEquals('bar@example.com', $authenticationManager->getEmailOfAuthenticatedUser());
@@ -33,7 +34,7 @@ final class AuthorizationTest extends BaseTestCase
 
         // do login
         $this->assertTrue(
-            $loginHandler->handleLoginForm('bar@example.com', 'bar')
+            $loginHandler->handleLoginForm('bar@example.com', 'bar') instanceof User
         );
     }
 
@@ -44,6 +45,7 @@ final class AuthorizationTest extends BaseTestCase
     {
         $authenticationManager = new AuthenticationManager($this->getApp());
         $registrationHandler = new RegistrationHandler($authenticationManager);
+        $loginHandler = new LoginHandler($authenticationManager);
 
         // register
         try {
@@ -52,5 +54,10 @@ final class AuthorizationTest extends BaseTestCase
         } catch (Exception $exception) {
             $this->fail(sprintf('Registration form handler failed with error "%s"', $exception->getMessage()));
         }
+
+        // do login
+        $this->assertTrue(
+            $loginHandler->handleLoginForm('foo@example.com', 'foo') instanceof User
+        );
     }
 }

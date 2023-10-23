@@ -20,7 +20,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      */
     $registrationHandler = new RegistrationHandler($authenticationManager);
     try {
-        $result = $registrationHandler->handleRegistrationForm($email, $password, $passwordConfirm);
+        $user = $registrationHandler->handleRegistrationForm($email, $password, $passwordConfirm);
+        // faccio login
+        $authenticationManager->authenticateUser($user);
     } catch (Exception $exception) {
         $error = $exception->getMessage();
     }
@@ -28,10 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $logger = new Logger($app);
     $logger->writeLogRegistration($email);
     $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
-
-
-    // faccio login
-    $authenticationManager->authenticateUser($email);
 
     // redirect
     $redirectManager = new RedirectManager($authenticationManager);

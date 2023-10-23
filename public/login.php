@@ -12,21 +12,21 @@ $formAction = RequestHelper::buildPathWithQueryParameters('login.php', [
  */
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
-    $password = $_POST['password'];
+    $plainPassword = $_POST['password'];
 
     /**
      * valido gli input
      */
     $loginHandler = new LoginHandler($authenticationManager);
-    $result = $loginHandler->handleLoginForm($email, $password);
+    $user = $loginHandler->handleLoginForm($email, $plainPassword);
 
-    if ($result === true) {
+    if ($user instanceof User) {
         $logger = new Logger($app);
         $logger->writeLogLogin($email);
 
         $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 
-        $authenticationManager->authenticateUser($email);
+        $authenticationManager->authenticateUser($user);
 
         $redirectManager = new RedirectManager($authenticationManager);
         $redirectManager->redirect($referer);
@@ -47,8 +47,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="col-6 offset-3">
                     <h1>Login</h1>
 
-                    <?php if (isset($result) && is_array($result)): ?>
-                        <?php foreach ($result as $error): ?>
+                    <?php if (isset($user) && is_array($user)): ?>
+                        <?php foreach ($user as $error): ?>
                             <p style="color: red;">
                                 <?= $error; ?>
                             </p>

@@ -13,13 +13,13 @@ class RegistrationHandler
     }
 
     /**
+     *
      * @param $email
      * @param $password
      * @param $passwordConfirm
      * @throws Exception
-     * @return true|array true if user can be authenticated, an array of strings representing errors if not
      */
-    function handleRegistrationForm($email, $password, $passwordConfirm)
+    function handleRegistrationForm($email, $password, $passwordConfirm): User
     {
         if (empty($email)) {
             throw new Exception('Campo email obbligatorio');
@@ -46,8 +46,11 @@ class RegistrationHandler
         }
 
         // inserisco un nuovo utente
-        $user = new User($email, $password);
+//        $user = new User($email, $password);
+        $user = User::buildWithPlainPassword($email, $password);
 
         $this->authenticationManager->addUser($user);
+
+        return $user;
     }
 }

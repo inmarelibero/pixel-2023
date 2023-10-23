@@ -2,11 +2,25 @@
 class User
 {
     private string $email; 
-    private string $passwordHash;
+    private string $hashedPassword;
 
-    function __construct($email, $password) {
+    /**
+     * @param string $email
+     * @param string $hashedPassword
+     */
+    function __construct(string $email, string $hashedPassword) {
         $this->email = $email;
-        $this->passwordHash = $password;
+        $this->hashedPassword = $hashedPassword;
+    }
+
+    /**
+     * @param string $email
+     * @param string $plainPassword
+     * @return User
+     */
+    static function buildWithPlainPassword(string $email, string $plainPassword): User
+    {
+        return new User($email, md5($plainPassword));
     }
 
     /**
@@ -20,8 +34,35 @@ class User
     /**
      * @return string
      */
-    public function getPasswordHash(): string
+    public function getHashedPassword(): string
     {
-        return $this->passwordHash;
+        return $this->hashedPassword;
+    }
+
+    /**
+     * @param string $email
+     * @return bool
+     */
+    public function hasEmail(string $email): bool
+    {
+        return $this->getEmail() === $email;
+    }
+
+    /**
+     * @param string $plainPassword
+     * @return bool
+     */
+    public function hasPlainPassword(string $plainPassword): bool
+    {
+        return $this->getHashedPassword() === md5($plainPassword);
+    }
+
+    /**
+     * @param string $hashedPassword
+     * @return bool
+     */
+    public function hasHashedPassword(string $hashedPassword): bool
+    {
+        return $this->getHashedPassword() === $hashedPassword;
     }
 }
