@@ -52,7 +52,7 @@ class BaseTestCase extends TestCase
         file_put_contents($this->fileManager->buildPathRelativeToProjectRoot('users.json'), json_encode([
             [
                 'email' => 'bar@example.com',
-                'password' => 'bar',
+                'password' => md5('bar'),
             ]
         ]));
 

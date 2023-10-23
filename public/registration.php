@@ -19,26 +19,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      * valido gli input
      */
     $registrationHandler = new RegistrationHandler($authenticationManager);
+
     try {
         $user = $registrationHandler->handleRegistrationForm($email, $password, $passwordConfirm);
-        // faccio login
-        $authenticationManager->authenticateUser($user);
     } catch (Exception $exception) {
         $error = $exception->getMessage();
     }
 
-    $logger = new Logger($app);
-    $logger->writeLogRegistration($email);
-    $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 
-    // redirect
-    $redirectManager = new RedirectManager($authenticationManager);
+    if (isset($user)) {
+        $logger = new Logger($app);
+        $logger->writeLogRegistration($email);
+        $referer = array_key_exists('_referer', $_GET) ? $_GET['_referer'] : null;
 
-    if ($referer !== null) {
-        $redirectManager->redirect($referer);
+        // faccio login
+        $authenticationManager->authenticateUser($user);
+
+        // redirect
+        $redirectManager = new RedirectManager($authenticationManager);
+
+        if ($referer !== null) {
+            $redirectManager->redirect($referer);
+        }
+
+        $redirectManager->redirect();
     }
-
-    $redirectManager->redirect();
 }
 ?>
 

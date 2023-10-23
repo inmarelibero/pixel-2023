@@ -13,37 +13,31 @@ class LoginHandler
     }
 
     /**
-     * @param $email
-     * @param $plainPassword
-     * @return User|array true if user can be authenticated, an array of strings representing errors if not
+     * @param string $email
+     * @param string $plainPassword
+     * @return User
+     * @throws Exception
      */
-    public function handleLoginForm($email, $plainPassword): User
+    public function handleLoginForm(string $email, string $plainPassword): User
     {
-        // array di errori
-        $errors = [];
-
         if (empty($email)) {
-            $errors[] = 'Campo email obbligatorio';
+            throw new Exception('Campo email obbligatorio');
         }
 
         if (empty($plainPassword)) {
-            $errors[] = 'Campo password obbligatorio';
-        } else {
-            if (strlen($plainPassword) < 3) {
-                $errors[] = 'Password troppo corta';
-            }
+            throw new Exception('Campo password obbligatorio');
         }
 
-        if (count($errors) <= 0) {
-            $user = User::buildWithPlainPassword($email, $plainPassword);
-
-            if ($this->authenticationManager->checkCredentials($user)) {
-                return $user;
-            } else {
-                $errors[] = 'Utente e password non trovati';
-            }
+        if (strlen($plainPassword) < 3) {
+            throw new Exception('Password troppo corta');
         }
 
-        return $errors;
+        $user = User::buildWithPlainPassword($email, $plainPassword);
+
+        if ($this->authenticationManager->checkCredentials($user)) {
+            return $user;
+        }
+
+        throw new Exception('Utente e password non trovati');
     }
 }

@@ -18,9 +18,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
      * valido gli input
      */
     $loginHandler = new LoginHandler($authenticationManager);
-    $user = $loginHandler->handleLoginForm($email, $plainPassword);
 
-    if ($user instanceof User) {
+    try {
+        $user = $loginHandler->handleLoginForm($email, $plainPassword);
+    } catch (Exception $exception) {
+        $error = $exception->getMessage();
+    }
+
+    if (isset($user)) {
         $logger = new Logger($app);
         $logger->writeLogLogin($email);
 
@@ -47,12 +52,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="col-6 offset-3">
                     <h1>Login</h1>
 
-                    <?php if (isset($user) && is_array($user)): ?>
-                        <?php foreach ($user as $error): ?>
-                            <p style="color: red;">
-                                <?= $error; ?>
-                            </p>
-                        <?php endforeach; ?>
+                    <?php if (isset($error)): ?>
+                        <p style="color: red;">
+                            <?= $error; ?>
+                        </p>
                     <?php endif; ?>
                     <form method="POST" action="<?= $formAction ?>">
                         <div class="mb-3">
