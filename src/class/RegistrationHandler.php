@@ -46,6 +46,8 @@ class RegistrationHandler
         }
 
         // inserisco un nuovo utente
-        $this->authenticationManager->addUser($email, $password);
+        $user = new User($email, $password);
+
+        $this->authenticationManager->addUser($user);
     }
 }

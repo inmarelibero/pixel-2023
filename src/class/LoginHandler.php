@@ -35,7 +35,9 @@ class LoginHandler
         }
 
         if (count($errors) <= 0) {
-            if ($this->authenticationManager->checkCredentials($email, $password)) {
+            $user = new User($email, $password);
+
+            if ($this->authenticationManager->checkCredentials($user)) {
                 return true;
             } else {
                 $errors[] = 'Utente e password non trovati';
