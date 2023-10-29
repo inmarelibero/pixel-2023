@@ -32,9 +32,13 @@ class LoginHandler
             throw new Exception('Password troppo corta');
         }
 
-        $user = User::buildWithPlainPassword($email, $plainPassword);
+        $user = $this->authenticationManager->findUserByEmail($email);
 
-        if ($this->authenticationManager->checkCredentials($user)) {
+        if ($user->isEnabled() !== true) {
+            throw new Exception('Utente non abilitato');
+        }
+
+        if ($this->authenticationManager->checkCredentials($user, $email, $plainPassword)) {
             return $user;
         }
 
