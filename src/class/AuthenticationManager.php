@@ -16,26 +16,26 @@ class AuthenticationManager
      * @param User $user
      * @return void
      */
-    public function addUser(User $user)
+    public function addUser(User $user): void
     {
         $users = $this->getUsers();
 
         $users[] = $user;
 
-        $this->saveUsers($users);
+        $this->persistUsers($users);
     }
 
     /**
      * @param User $user
      * @return void
      */
-    public function authenticateUser(User $user)
+    public function authenticateUser(User $user): void
     {
         $_SESSION['email'] = $user->getEmail();
     }
 
     /**
-     * @param $user
+     * @param User $user
      * @return bool
      */
     public function checkCredentials(User $user): bool
@@ -53,12 +53,11 @@ class AuthenticationManager
 
     /**
      * @param string $email
-     * @param array $users
      * @return bool
      */
-    public function emailExists(string $email, array $users): bool
+    public function emailExists(string $email): bool
     {
-        foreach ($users as $user) {
+        foreach ($this->getUsers() as $user) {
             if ($user->hasEmail($email)) {
                 return true;
             }
@@ -106,7 +105,7 @@ class AuthenticationManager
     /**
      * @return bool
      */
-    public function isUserAuthenticated()
+    public function isUserAuthenticated(): bool
     {
         return array_key_exists('email', $_SESSION);
     }
@@ -115,7 +114,7 @@ class AuthenticationManager
      * @param User[] $users
      * @return void
      */
-    private function saveUsers(array $users)
+    private function persistUsers(array $users): void
     {
         $usersFilename = $this->fileManager->buildPathRelativeToProjectRoot('users.json');
 

@@ -15,6 +15,9 @@ class BaseTestCase extends TestCase
      */
     protected function setUp(): void
     {
+        session_start();
+        session_destroy();
+
         $this->app = new App('test');
         $this->fileManager = new FileManager($this->app);
 

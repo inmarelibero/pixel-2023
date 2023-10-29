@@ -41,7 +41,7 @@ class RegistrationHandler
         $users = $this->authenticationManager->getUsers();
 
         // se l'email esiste già: errore
-        if ($this->authenticationManager->emailExists($email, $users)) {
+        if ($this->authenticationManager->emailExists($email)) {
             throw new Exception('Email già esistente');
         }
 

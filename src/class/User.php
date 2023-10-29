@@ -20,7 +20,7 @@ class User
      */
     static function buildWithPlainPassword(string $email, string $plainPassword): User
     {
-        return new User($email, md5($plainPassword));
+        return new User($email, PasswordHasher::hashPassword($plainPassword));
     }
 
     /**
@@ -54,7 +54,7 @@ class User
      */
     public function hasPlainPassword(string $plainPassword): bool
     {
-        return $this->getHashedPassword() === md5($plainPassword);
+        return $this->getHashedPassword() === PasswordHasher::hashPassword($plainPassword);
     }
 
     /**

@@ -11,6 +11,7 @@ require_once(__DIR__.'/src/class/RedirectManager.php');
 require_once(__DIR__.'/src/class/RegistrationHandler.php');
 require_once(__DIR__.'/src/class/RequestHelper.php');
 require_once(__DIR__.'/src/class/TemplateHelper.php');
+require_once(__DIR__.'/src/class/PasswordHasher.php');
 
 $app = new App('prod');
 $authenticationManager = new AuthenticationManager($app);
